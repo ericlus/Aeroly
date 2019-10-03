@@ -9,6 +9,10 @@ import {
 } from "@material-ui/pickers";
 import moment from "moment";
 import Button from "@material-ui/core/Button";
+import MenuItem from "@material-ui/core/MenuItem";
+import FormControl from "@material-ui/core/FormControl";
+import Select from "@material-ui/core/Select";
+import InputLabel from "@material-ui/core/InputLabel";
 
 class Search extends React.Component {
   constructor(props) {
@@ -20,13 +24,18 @@ class Search extends React.Component {
       departDate: new Date(),
       returnDate: moment(new Date())
         .add("days", 7)
-        .format("MM-DD-YYYY")
+        .format("MM-DD-YYYY"),
+      cabin: "economy",
+      adults: 1
     };
     this.handleSearch = this.handleSearch.bind(this);
     this.handleFromChange = this.handleFromChange.bind(this);
     this.handleToChange = this.handleToChange.bind(this);
     this.handleDepartDateChange = this.handleDepartDateChange.bind(this);
     this.handleReturnDateChange = this.handleReturnDateChange.bind(this);
+    this.handleClick = this.handleClick.bind(this);
+    this.handleSelectChange = this.handleSelectChange.bind(this);
+    this.handleAdultsChange = this.handleAdultsChange.bind(this);
   }
 
   handleSearch(query) {
@@ -42,11 +51,15 @@ class Search extends React.Component {
   }
 
   handleFromChange(input) {
-    this.props.changeFromDestination(input[0].PlaceId);
+    if (input[0]) {
+      this.props.changeFromDestination(input[0].PlaceId);
+    }
   }
 
   handleToChange(input) {
-    this.props.changeToDestination(input[0].PlaceId);
+    if (input[0]) {
+      this.props.changeToDestination(input[0].PlaceId);
+    }
   }
 
   handleDepartDateChange(date, dateFormatted) {
@@ -61,9 +74,22 @@ class Search extends React.Component {
     this.props.changeReturnDate(returnFormatted);
   }
 
-  handleClick() {}
+  handleClick() {
+    this.props.searchFlight();
+  }
+
+  handleSelectChange(e) {
+    this.setState({ cabin: e.target.value });
+    this.props.changeCabin(e.target.value);
+  }
+
+  handleAdultsChange(e) {
+    this.setState({ adults: e.target.value });
+    this.props.changeAdults(e.target.value);
+  }
 
   render() {
+    const adults = [1, 2, 3, 4, 5, 6, 7, 8];
     return (
       <div>
         <AsyncTypeahead
@@ -124,6 +150,38 @@ class Search extends React.Component {
             />
           </Grid>
         </MuiPickersUtilsProvider>
+
+        <FormControl>
+          <InputLabel htmlFor="age-simple">Cabin</InputLabel>
+          <Select
+            value={this.state.cabin}
+            onChange={this.handleSelectChange}
+            inputProps={{
+              name: "Cabin"
+            }}
+          >
+            <MenuItem value={"economy"}>Economy</MenuItem>
+            <MenuItem value={"premiumeconomy"}>Premium Economy</MenuItem>
+            <MenuItem value={"business"}>Business</MenuItem>
+            <MenuItem value={"first"}>First</MenuItem>
+          </Select>
+        </FormControl>
+
+        <FormControl>
+          <InputLabel htmlFor="age-simple">Adults</InputLabel>
+          <Select
+            value={this.state.adults}
+            onChange={this.handleAdultsChange}
+            inputProps={{
+              name: "Adults"
+            }}
+          >
+            {adults.map(item => {
+              return <MenuItem value={item}>{item}</MenuItem>;
+            })}
+          </Select>
+        </FormControl>
+
         <Button variant="outlined" onClick={this.handleClick}>
           Search Flights
         </Button>
