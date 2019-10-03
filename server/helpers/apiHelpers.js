@@ -1,9 +1,9 @@
 const axios = require("axios");
 const apiKey = require("../config.js");
 
-const listPlaces = () => {
+const listPlaces = place => {
   return axios.get(
-    "https://skyscanner-skyscanner-flight-search-v1.p.rapidapi.com/apiservices/browsequotes/v1.0/US/USD/en-US/SFO-sky/JFK-sky/2019-10-10?inboundpartialdate=2019-12-01",
+    `https://skyscanner-skyscanner-flight-search-v1.p.rapidapi.com/apiservices/autosuggest/v1.0/US/USD/en-US/?query=${place}`,
     {
       headers: apiKey
     }

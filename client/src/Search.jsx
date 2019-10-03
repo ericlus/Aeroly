@@ -1,184 +1,72 @@
-import React from "react";
-import deburr from "lodash/deburr";
-import Autosuggest from "react-autosuggest";
-import match from "autosuggest-highlight/match";
-import parse from "autosuggest-highlight/parse";
-import TextField from "@material-ui/core/TextField";
-import Paper from "@material-ui/core/Paper";
-import MenuItem from "@material-ui/core/MenuItem";
-import { makeStyles } from "@material-ui/core/styles";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { AsyncTypeahead } from "react-bootstrap-typeahead";
 
-const suggestions = [];
-
-function renderInputComponent(inputProps) {
-  const { classes, inputRef = () => {}, ref, ...other } = inputProps;
-
-  return (
-    <TextField
-      fullWidth
-      InputProps={{
-        inputRef: node => {
-          ref(node);
-          inputRef(node);
-        },
-        classes: {
-          input: classes.input
-        }
-      }}
-      {...other}
-    />
-  );
-}
-
-function renderSuggestion(suggestion, { query, isHighlighted }) {
-  const matches = match(suggestion.label, query);
-  const parts = parse(suggestion.label, matches);
-
-  return (
-    <MenuItem selected={isHighlighted} component="div">
-      <div>
-        {parts.map(part => (
-          <span
-            key={part.text}
-            style={{ fontWeight: part.highlight ? 500 : 400 }}
-          >
-            {part.text}
-          </span>
-        ))}
-      </div>
-    </MenuItem>
-  );
-}
-
-function getSuggestions(value) {
-  const inputValue = deburr(value.trim()).toLowerCase();
-  const inputLength = inputValue.length;
-  let count = 0;
-
-  return inputLength === 0
-    ? []
-    : suggestions.filter(suggestion => {
-        const keep =
-          count < 5 &&
-          suggestion.label.slice(0, inputLength).toLowerCase() === inputValue;
-
-        if (keep) {
-          count += 1;
-        }
-
-        return keep;
-      });
-}
-
-function getSuggestionValue(suggestion) {
-  return suggestion.label;
-}
-
-const useStyles = makeStyles(theme => ({
-  root: {
-    height: 250,
-    flexGrow: 1
-  },
-  container: {
-    position: "relative"
-  },
-  suggestionsContainerOpen: {
-    position: "absolute",
-    zIndex: 1,
-    marginTop: theme.spacing(1),
-    left: 0,
-    right: 0
-  },
-  suggestion: {
-    display: "block"
-  },
-  suggestionsList: {
-    margin: 0,
-    padding: 0,
-    listStyleType: "none"
+class Search extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      allowNew: false,
+      isLoading: false,
+      options: [],
+      from: "",
+      to: ""
+    };
+    this.handleSearch = this.handleSearch.bind(this);
+    this.handleFromChange = this.handleFromChange.bind(this);
+    this.handleToChange = this.handleToChange.bind(this);
   }
-}));
 
-const Search = () => {
-  const classes = useStyles();
-  const [state, setState] = React.useState({
-    from: "",
-    to: ""
-  });
+  handleSearch(query) {
+    this.setState({ isLoading: true });
+    axios
+      .get("/list/places", { params: { word: query } })
+      .then(result => {
+        this.setState({ isLoading: false, options: result.data.Places });
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }
 
-  const [stateSuggestions, setSuggestions] = React.useState([]);
+  handleFromChange(input) {
+    this.setState({ from: input[0].PlaceId });
+  }
 
-  const handleSuggestionsFetchRequested = ({ value }) => {
-    setSuggestions(getSuggestions(value));
-  };
+  handleToChange(input) {
+    this.setState({ to: input[0].PlaceId });
+  }
 
-  const handleSuggestionsClearRequested = () => {
-    setSuggestions([]);
-  };
-
-  const handleChange = name => (event, { newValue }) => {
-    console.log(newValue);
-    setState({
-      ...state,
-      [name]: newValue
-    });
-  };
-
-  const autosuggestProps = {
-    renderInputComponent,
-    suggestions: stateSuggestions,
-    onSuggestionsFetchRequested: handleSuggestionsFetchRequested,
-    onSuggestionsClearRequested: handleSuggestionsClearRequested,
-    getSuggestionValue,
-    renderSuggestion
-  };
-
-  return (
-    <div className={classes.root}>
-      <Autosuggest
-        {...autosuggestProps}
-        inputProps={{
-          classes,
-          label: "From",
-          placeholder: "Country, City, Airport",
-          value: state.from,
-          onChange: handleChange("from")
-        }}
-        theme={{
-          container: classes.container,
-          suggestionsContainerOpen: classes.suggestionsContainerOpen,
-          suggestionsList: classes.suggestionsList,
-          suggestion: classes.suggestion
-        }}
-        renderSuggestionsContainer={options => (
-          <Paper {...options.containerProps} square>
-            {options.children}
-          </Paper>
-        )}
-      />
-      <Autosuggest
-        {...autosuggestProps}
-        inputProps={{
-          classes,
-          label: "To",
-          placeholder: "Country, City, Airport",
-          value: state.to,
-          onChange: handleChange("to")
-        }}
-        theme={{
-          container: classes.container,
-          suggestionsContainerOpen: classes.suggestionsContainerOpen,
-          suggestionsList: classes.suggestionsList,
-          suggestion: classes.suggestion
-        }}
-        renderSuggestionsContainer={options => (
-          <Paper {...options.containerProps} square>
-            {options.children}
-          </Paper>
-        )}
-      />
-    </div>
-  );
-};
+  render() {
+    return (
+      <div>
+        <AsyncTypeahead
+          {...this.state}
+          id="location"
+          labelKey="PlaceName"
+          filterBy={(option, prop) => {
+            return option;
+          }}
+          minLength={3}
+          onSearch={this.handleSearch}
+          placeholder="Search for a location"
+          onChange={this.handleFromChange}
+        />
+        <AsyncTypeahead
+          {...this.state}
+          id="location"
+          labelKey="PlaceName"
+          filterBy={(option, prop) => {
+            return option;
+          }}
+          minLength={3}
+          onSearch={this.handleSearch}
+          placeholder="Search for a location"
+          onChange={this.handleToChange}
+        />
+      </div>
+    );
+  }
+}
 
 export default Search;

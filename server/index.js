@@ -8,7 +8,7 @@ const app = express();
 app.use("/", express.static(path.join(__dirname, "../client/dist")));
 
 app.get("/list/places", (req, res) => {
-  listPlaces()
+  listPlaces(req.query.word)
     .then(result => {
       res.send(result.data);
     })
