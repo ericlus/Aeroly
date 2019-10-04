@@ -1,7 +1,7 @@
 import React from "react";
 import FlightListItem from "./FlightListItem.jsx";
 
-const FlightList = ({ liveResults, agents }) => {
+const FlightList = ({ liveResults, agents, legs, carriers }) => {
   return (
     <div>
       <div>
@@ -13,7 +13,13 @@ const FlightList = ({ liveResults, agents }) => {
             <div>
               {liveResults.Itineraries.map((flight, i) => {
                 return (
-                  <FlightListItem flight={flight} index={i} agents={agents} />
+                  <FlightListItem
+                    flight={flight}
+                    index={i}
+                    agents={agents}
+                    legs={legs}
+                    carriers={carriers}
+                  />
                 );
               })}
             </div>
