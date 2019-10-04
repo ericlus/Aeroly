@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import { AsyncTypeahead } from "react-bootstrap-typeahead";
 import Grid from "@material-ui/core/Grid";
@@ -14,180 +14,181 @@ import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import InputLabel from "@material-ui/core/InputLabel";
 
-class Search extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      allowNew: false,
-      isLoading: false,
-      options: [],
-      departDate: new Date(),
-      returnDate: moment(new Date())
-        .add("days", 7)
-        .format("MM-DD-YYYY"),
-      cabin: "economy",
-      adults: 1
-    };
-    this.handleSearch = this.handleSearch.bind(this);
-    this.handleFromChange = this.handleFromChange.bind(this);
-    this.handleToChange = this.handleToChange.bind(this);
-    this.handleDepartDateChange = this.handleDepartDateChange.bind(this);
-    this.handleReturnDateChange = this.handleReturnDateChange.bind(this);
-    this.handleClick = this.handleClick.bind(this);
-    this.handleSelectChange = this.handleSelectChange.bind(this);
-    this.handleAdultsChange = this.handleAdultsChange.bind(this);
-  }
+const Search = ({
+  changeFromDestination,
+  changeToDestination,
+  changeDepartDate,
+  changeReturnDate,
+  searchFlight,
+  changeCabin,
+  changeAdults
+}) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [options, setOptions] = useState([]);
+  const [departDate, setDepartDate] = useState(new Date());
+  const [returnDate, setReturnDate] = useState(
+    moment(new Date())
+      .add("days", 7)
+      .format("MM-DD-YYYY")
+  );
+  const [cabin, setCabin] = useState("economy");
+  const [adults, setAdults] = useState(1);
 
-  handleSearch(query) {
-    this.setState({ isLoading: true });
+  const handleSearch = query => {
+    setIsLoading(true);
     axios
       .get("/list/places", { params: { word: query } })
       .then(result => {
-        this.setState({ isLoading: false, options: result.data.Places });
+        setIsLoading(false);
+        setOptions(result.data.Places);
       })
       .catch(err => {
         console.log(err);
       });
-  }
+  };
 
-  handleFromChange(input) {
+  const handleFromChange = input => {
     if (input[0]) {
-      this.props.changeFromDestination(input[0].PlaceId);
+      changeFromDestination(input[0].PlaceId);
     }
-  }
+  };
 
-  handleToChange(input) {
+  const handleToChange = input => {
     if (input[0]) {
-      this.props.changeToDestination(input[0].PlaceId);
+      changeToDestination(input[0].PlaceId);
     }
-  }
+  };
 
-  handleDepartDateChange(date, dateFormatted) {
-    this.setState({ departDate: dateFormatted });
+  const handleDepartDateChange = (date, dateFormatted) => {
+    setDepartDate(dateFormatted);
     let departFormatted = moment(dateFormatted).format("YYYY-MM-DD");
-    this.props.changeDepartDate(departFormatted);
-  }
+    changeDepartDate(departFormatted);
+  };
 
-  handleReturnDateChange(date, dateFormatted) {
-    this.setState({ returnDate: dateFormatted });
+  const handleReturnDateChange = (date, dateFormatted) => {
+    setReturnDate(dateFormatted);
     let returnFormatted = moment(dateFormatted).format("YYYY-MM-DD");
-    this.props.changeReturnDate(returnFormatted);
-  }
+    changeReturnDate(returnFormatted);
+  };
 
-  handleClick() {
-    this.props.searchFlight();
-  }
+  const handleClick = () => {
+    searchFlight();
+  };
 
-  handleSelectChange(e) {
-    this.setState({ cabin: e.target.value });
-    this.props.changeCabin(e.target.value);
-  }
+  const handleSelectChange = e => {
+    setCabin(e.target.value);
+    changeCabin(e.target.value);
+  };
 
-  handleAdultsChange(e) {
+  const handleAdultsChange = e => {
     this.setState({ adults: e.target.value });
-    this.props.changeAdults(e.target.value);
-  }
+    setAdults(e.target.value);
+    changeAdults(e.target.value);
+  };
 
-  render() {
-    const adults = [1, 2, 3, 4, 5, 6, 7, 8];
-    return (
-      <div>
-        <AsyncTypeahead
-          {...this.state}
-          id="location"
-          labelKey="PlaceName"
-          filterBy={(option, prop) => {
-            return option;
-          }}
-          minLength={3}
-          onSearch={this.handleSearch}
-          placeholder="Search for a location"
-          onChange={this.handleFromChange}
-        />
-        <AsyncTypeahead
-          {...this.state}
-          id="location"
-          labelKey="PlaceName"
-          filterBy={(option, prop) => {
-            return option;
-          }}
-          minLength={3}
-          onSearch={this.handleSearch}
-          placeholder="Search for a location"
-          onChange={this.handleToChange}
-        />
-        <MuiPickersUtilsProvider utils={DateFnsUtils}>
-          <Grid container justify="space-around">
-            <KeyboardDatePicker
-              disableToolbar
-              variant="inline"
-              format="MM/dd/yyyy"
-              margin="normal"
-              id="date-picker-inline"
-              label="Depart"
-              value={this.state.departDate}
-              onChange={this.handleDepartDateChange}
-              KeyboardButtonProps={{
-                "aria-label": "change date"
-              }}
-            />
-          </Grid>
-        </MuiPickersUtilsProvider>
-        <MuiPickersUtilsProvider utils={DateFnsUtils}>
-          <Grid container justify="space-around">
-            <KeyboardDatePicker
-              disableToolbar
-              variant="inline"
-              format="MM/dd/yyyy"
-              margin="normal"
-              id="date-picker-inline"
-              label="Return"
-              value={this.state.returnDate}
-              onChange={this.handleReturnDateChange}
-              KeyboardButtonProps={{
-                "aria-label": "change date"
-              }}
-            />
-          </Grid>
-        </MuiPickersUtilsProvider>
+  const numAdults = [1, 2, 3, 4, 5, 6, 7, 8];
 
-        <FormControl>
-          <InputLabel htmlFor="age-simple">Cabin</InputLabel>
-          <Select
-            value={this.state.cabin}
-            onChange={this.handleSelectChange}
-            inputProps={{
-              name: "Cabin"
+  return (
+    <div>
+      <AsyncTypeahead
+        isLoading={isLoading}
+        options={options}
+        useCache={false}
+        id="location"
+        labelKey="PlaceName"
+        filterBy={(option, prop) => {
+          return option;
+        }}
+        minLength={3}
+        onSearch={handleSearch}
+        placeholder="Search for a location"
+        onChange={handleFromChange}
+      />
+      <AsyncTypeahead
+        isLoading={isLoading}
+        options={options}
+        useCache={false}
+        id="location"
+        labelKey="PlaceName"
+        filterBy={(option, prop) => {
+          return option;
+        }}
+        minLength={3}
+        onSearch={handleSearch}
+        placeholder="Search for a location"
+        onChange={handleToChange}
+      />
+      <MuiPickersUtilsProvider utils={DateFnsUtils}>
+        <Grid container justify="space-around">
+          <KeyboardDatePicker
+            disableToolbar
+            variant="inline"
+            format="MM/dd/yyyy"
+            margin="normal"
+            id="date-picker-inline"
+            label="Depart"
+            value={departDate}
+            onChange={handleDepartDateChange}
+            KeyboardButtonProps={{
+              "aria-label": "change date"
             }}
-          >
-            <MenuItem value={"economy"}>Economy</MenuItem>
-            <MenuItem value={"premiumeconomy"}>Premium Economy</MenuItem>
-            <MenuItem value={"business"}>Business</MenuItem>
-            <MenuItem value={"first"}>First</MenuItem>
-          </Select>
-        </FormControl>
-
-        <FormControl>
-          <InputLabel htmlFor="age-simple">Adults</InputLabel>
-          <Select
-            value={this.state.adults}
-            onChange={this.handleAdultsChange}
-            inputProps={{
-              name: "Adults"
+          />
+        </Grid>
+      </MuiPickersUtilsProvider>
+      <MuiPickersUtilsProvider utils={DateFnsUtils}>
+        <Grid container justify="space-around">
+          <KeyboardDatePicker
+            disableToolbar
+            variant="inline"
+            format="MM/dd/yyyy"
+            margin="normal"
+            id="date-picker-inline"
+            label="Return"
+            value={returnDate}
+            onChange={handleReturnDateChange}
+            KeyboardButtonProps={{
+              "aria-label": "change date"
             }}
-          >
-            {adults.map(item => {
-              return <MenuItem value={item}>{item}</MenuItem>;
-            })}
-          </Select>
-        </FormControl>
+          />
+        </Grid>
+      </MuiPickersUtilsProvider>
 
-        <Button variant="outlined" onClick={this.handleClick}>
-          Search Flights
-        </Button>
-      </div>
-    );
-  }
-}
+      <FormControl>
+        <InputLabel htmlFor="age-simple">Cabin</InputLabel>
+        <Select
+          value={cabin}
+          onChange={handleSelectChange}
+          inputProps={{
+            name: "Cabin"
+          }}
+        >
+          <MenuItem value={"economy"}>Economy</MenuItem>
+          <MenuItem value={"premiumeconomy"}>Premium Economy</MenuItem>
+          <MenuItem value={"business"}>Business</MenuItem>
+          <MenuItem value={"first"}>First</MenuItem>
+        </Select>
+      </FormControl>
+
+      <FormControl>
+        <InputLabel htmlFor="age-simple">Adults</InputLabel>
+        <Select
+          value={adults}
+          onChange={handleAdultsChange}
+          inputProps={{
+            name: "Adults"
+          }}
+        >
+          {numAdults.map(item => {
+            return <MenuItem value={item}>{item}</MenuItem>;
+          })}
+        </Select>
+      </FormControl>
+
+      <Button variant="outlined" onClick={handleClick}>
+        Search Flights
+      </Button>
+    </div>
+  );
+};
 
 export default Search;

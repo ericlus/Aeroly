@@ -2,10 +2,13 @@ const express = require("express");
 const path = require("path");
 const port = process.env.PORT || 3000;
 const { listPlaces, getQuotes, getRoutes } = require("./helpers/apiHelpers.js");
+const bodyParser = require("body-parser");
 
 const app = express();
 
 app.use("/", express.static(path.join(__dirname, "../client/dist")));
+
+app.use(bodyParser.json());
 
 app.get("/list/places", (req, res) => {
   listPlaces(req.query.word)
@@ -36,6 +39,11 @@ app.get("/browse/routes", (req, res) => {
       console.log(err);
     });
 });
+
+app.post("/search", (req, res) => {
+  console.log(req.body);
+});
+
 app.listen(port, () => {
   console.log("connected to server");
 });

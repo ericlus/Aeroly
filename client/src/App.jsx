@@ -1,76 +1,75 @@
-import React, { Component } from "react";
+import React, { useState } from "react";
 import Search from "./Search.jsx";
 import moment from "moment";
+import axios from "axios";
 
-class App extends Component {
-  constructor() {
-    super();
-    this.state = {
-      fromDestination: "",
-      toDestination: "",
-      departDate: moment(new Date()).format("YYYY-MM-DD"),
-      returnDate: moment(new Date())
-        .add("days", 7)
-        .format("YYYY-MM-DD"),
-      cabin: "economy",
-      adults: 1,
-      view: "HOME"
-    };
-    this.changeFromDestination = this.changeFromDestination.bind(this);
-    this.changeToDestination = this.changeToDestination.bind(this);
-    this.changeDepartDate = this.changeDepartDate.bind(this);
-    this.changeReturnDate = this.changeReturnDate.bind(this);
-    this.searchFlight = this.searchFlight.bind(this);
-    this.changeCabin = this.changeCabin.bind(this);
-    this.changeAdults = this.changeAdults.bind(this);
-  }
+const App = () => {
+  const [fromDestination, setFromDestination] = useState("");
+  const [toDestination, setToDestination] = useState("");
+  const [departDate, setDepartDate] = useState(
+    moment(new Date()).format("YYYY-MM-DD")
+  );
+  const [returnDate, setReturnDate] = useState(
+    moment(new Date())
+      .add("days", 7)
+      .format("YYYY-MM-DD")
+  );
+  const [cabin, setCabin] = useState("economy");
+  const [adults, setAdults] = useState(1);
+  const [view, setView] = useState("HOME");
 
-  changeFromDestination(destination) {
-    this.setState({ fromDestination: destination });
-  }
+  const changeFromDestination = destination => {
+    setFromDestination(destination);
+  };
 
-  changeToDestination(destination) {
-    this.setState({ toDestination: destination });
-  }
+  const changeToDestination = destination => {
+    setToDestination(destination);
+  };
 
-  changeDepartDate(date) {
-    this.setState({ departDate: date });
-  }
+  const changeDepartDate = date => {
+    setDepartDate(date);
+  };
 
-  changeReturnDate(date) {
-    this.setState({ returnDate: date });
-  }
+  const changeReturnDate = date => {
+    setReturnDate(date);
+  };
 
-  changeCabin(cabin) {
-    this.setState({ cabin: cabin });
-  }
+  const changeCabin = cabin => {
+    setCabin(cabin);
+  };
 
-  changeAdults(number) {
-    this.setState({ adults: number });
-  }
+  const changeAdults = number => {
+    setAdults(number);
+  };
 
-  searchFlight() {
-    this.setState({ view: "SEARCHED" });
-  }
+  const searchFlight = () => {
+    setView("SEARCHED");
+    axios.post("/search", {
+      fromDestination: fromDestination,
+      toDestination: toDestination,
+      departDate: departDate,
+      returnDate: returnDate,
+      cabin: cabin,
+      adults: adults
+    });
+  };
 
-  render() {
-    return (
-      <div>
-        <h1>Aeroly</h1>
-        {this.state.view === "HOME" ? (
-          <Search
-            changeFromDestination={this.changeFromDestination}
-            changeToDestination={this.changeToDestination}
-            changeDepartDate={this.changeDepartDate}
-            changeReturnDate={this.changeReturnDate}
-            searchFlight={this.searchFlight}
-            changeCabin={this.changeCabin}
-            changeAdults={this.changeAdults}
-          />
-        ) : null}
-      </div>
-    );
-  }
-}
+  return (
+    <div>
+      <h1>Aeroly</h1>
+      {view === "HOME" ? (
+        <Search
+          changeFromDestination={changeFromDestination}
+          changeToDestination={changeToDestination}
+          changeDepartDate={changeDepartDate}
+          changeReturnDate={changeReturnDate}
+          searchFlight={searchFlight}
+          changeCabin={changeCabin}
+          changeAdults={changeAdults}
+        />
+      ) : null}
+    </div>
+  );
+};
 
 export default App;
