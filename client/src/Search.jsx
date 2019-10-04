@@ -89,36 +89,43 @@ const Search = ({
 
   return (
     <div>
-      <AsyncTypeahead
-        isLoading={isLoading}
-        options={options}
-        useCache={false}
-        id="location"
-        labelKey="PlaceName"
-        filterBy={(option, prop) => {
-          return option;
-        }}
-        minLength={3}
-        onSearch={handleSearch}
-        placeholder="Search for a location"
-        onChange={handleFromChange}
-      />
-      <AsyncTypeahead
-        isLoading={isLoading}
-        options={options}
-        useCache={false}
-        id="location"
-        labelKey="PlaceName"
-        filterBy={(option, prop) => {
-          return option;
-        }}
-        minLength={3}
-        onSearch={handleSearch}
-        placeholder="Search for a location"
-        onChange={handleToChange}
-      />
-      <MuiPickersUtilsProvider utils={DateFnsUtils}>
-        <Grid container justify="space-around">
+      <Grid container justify="center">
+        <div style={{ width: "500px", padding: "10px" }}>
+          <AsyncTypeahead
+            isLoading={isLoading}
+            options={options}
+            useCache={false}
+            id="location"
+            labelKey="PlaceName"
+            filterBy={(option, prop) => {
+              return option;
+            }}
+            minLength={3}
+            onSearch={handleSearch}
+            placeholder="Search for a location"
+            onChange={handleFromChange}
+          />
+        </div>
+
+        <div style={{ width: "500px", padding: "10px" }}>
+          <AsyncTypeahead
+            isLoading={isLoading}
+            options={options}
+            useCache={false}
+            id="location"
+            labelKey="PlaceName"
+            filterBy={(option, prop) => {
+              return option;
+            }}
+            minLength={3}
+            onSearch={handleSearch}
+            placeholder="Search for a location"
+            onChange={handleToChange}
+          />
+        </div>
+      </Grid>
+      <Grid container justify="center">
+        <MuiPickersUtilsProvider utils={DateFnsUtils}>
           <KeyboardDatePicker
             disableToolbar
             variant="inline"
@@ -132,10 +139,9 @@ const Search = ({
               "aria-label": "change date"
             }}
           />
-        </Grid>
-      </MuiPickersUtilsProvider>
-      <MuiPickersUtilsProvider utils={DateFnsUtils}>
-        <Grid container justify="space-around">
+        </MuiPickersUtilsProvider>
+
+        <MuiPickersUtilsProvider utils={DateFnsUtils}>
           <KeyboardDatePicker
             disableToolbar
             variant="inline"
@@ -149,43 +155,46 @@ const Search = ({
               "aria-label": "change date"
             }}
           />
-        </Grid>
-      </MuiPickersUtilsProvider>
+        </MuiPickersUtilsProvider>
+        <div style={{ marginTop: "16px" }}>
+          <FormControl>
+            <InputLabel htmlFor="age-simple">Cabin</InputLabel>
+            <Select
+              value={cabin}
+              onChange={handleSelectChange}
+              inputProps={{
+                name: "Cabin"
+              }}
+            >
+              <MenuItem value={"economy"}>Economy</MenuItem>
+              <MenuItem value={"premiumeconomy"}>Premium Economy</MenuItem>
+              <MenuItem value={"business"}>Business</MenuItem>
+              <MenuItem value={"first"}>First</MenuItem>
+            </Select>
+          </FormControl>
 
-      <FormControl>
-        <InputLabel htmlFor="age-simple">Cabin</InputLabel>
-        <Select
-          value={cabin}
-          onChange={handleSelectChange}
-          inputProps={{
-            name: "Cabin"
-          }}
-        >
-          <MenuItem value={"economy"}>Economy</MenuItem>
-          <MenuItem value={"premiumeconomy"}>Premium Economy</MenuItem>
-          <MenuItem value={"business"}>Business</MenuItem>
-          <MenuItem value={"first"}>First</MenuItem>
-        </Select>
-      </FormControl>
+          <FormControl>
+            <InputLabel htmlFor="age-simple">Adults</InputLabel>
+            <Select
+              value={adults}
+              onChange={handleAdultsChange}
+              inputProps={{
+                name: "Adults"
+              }}
+            >
+              {numAdults.map(item => {
+                return <MenuItem value={item}>{item}</MenuItem>;
+              })}
+            </Select>
+          </FormControl>
+        </div>
+      </Grid>
 
-      <FormControl>
-        <InputLabel htmlFor="age-simple">Adults</InputLabel>
-        <Select
-          value={adults}
-          onChange={handleAdultsChange}
-          inputProps={{
-            name: "Adults"
-          }}
-        >
-          {numAdults.map(item => {
-            return <MenuItem value={item}>{item}</MenuItem>;
-          })}
-        </Select>
-      </FormControl>
-
-      <Button variant="outlined" onClick={handleClick}>
-        Search Flights
-      </Button>
+      <Grid container justify="center" style={{ padding: "20px" }}>
+        <Button variant="outlined" onClick={handleClick}>
+          Search Flights
+        </Button>
+      </Grid>
     </div>
   );
 };
