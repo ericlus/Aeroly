@@ -1,5 +1,7 @@
 import React from "react";
 import FlightListItem from "./FlightListItem.jsx";
+import List from "@material-ui/core/List";
+import Grid from "@material-ui/core/Grid";
 
 const FlightList = ({ liveResults, agents, legs, carriers }) => {
   return (
@@ -10,19 +12,21 @@ const FlightList = ({ liveResults, agents, legs, carriers }) => {
             {liveResults.Status === "UpdatesPending" ? (
               <div>Loading...</div>
             ) : null}
-            <div>
-              {liveResults.Itineraries.map((flight, i) => {
-                return (
-                  <FlightListItem
-                    flight={flight}
-                    index={i}
-                    agents={agents}
-                    legs={legs}
-                    carriers={carriers}
-                  />
-                );
-              })}
-            </div>
+            <Grid container justify="center">
+              <List>
+                {liveResults.Itineraries.map((flight, i) => {
+                  return (
+                    <FlightListItem
+                      flight={flight}
+                      index={i}
+                      agents={agents}
+                      legs={legs}
+                      carriers={carriers}
+                    />
+                  );
+                })}
+              </List>
+            </Grid>
           </div>
         ) : (
           <div>Searching for Flights</div>

@@ -76,7 +76,7 @@ const App = () => {
 
   return (
     <div>
-      <h1>Aeroly</h1>
+      <h1 style={{ textAlign: "center" }}>Aeroly</h1>
       {view === "HOME" ? (
         <Search
           changeFromDestination={changeFromDestination}
