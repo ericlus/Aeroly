@@ -11,30 +11,37 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const FlightListItem = ({ flight, index, agents, legs, carriers }) => {
-  //   const findAgent = agentNumber => {
-  //     for (let i = 0; i < agents.length; i++) {
-  //       if (agents[i].Id === agentNumber) {
-  //         return (
-  //           <div>
-  //             <img src={agents[i].ImageUrl} />
-  //           </div>
-  //         );
-  //       }
-  //     }
-  //   };
-
-  const findCarrier = (carrierId, arrival, departure) => {
+const FlightListItem = ({ flight, index, agents, legs, carriers, places }) => {
+  const findCarrier = (
+    carrierId,
+    arrival,
+    departure,
+    originStation,
+    destinationStation
+  ) => {
     const splitArrival = arrival.split("T");
     const splitDeparture = departure.split("T");
     const formatArrival = moment(splitArrival[1], "HH:mm").format("hh:mm a");
     const formatDeparture = moment(splitDeparture[1], "HH:mm").format(
       "hh:mm a"
     );
+    let firstStation;
+    let secondStation;
+
+    for (let i = 0; i < places.length; i++) {
+      if (places[i].Id === originStation) {
+        console.log(places[i].Code);
+        firstStation = places[i].Code;
+      }
+      if (places[i].Id === destinationStation) {
+        console.log(places[i].Code);
+        secondStation = places[i].Code;
+      }
+    }
+
     for (let i = 0; i < carriers.length; i++) {
       if (carriers[i].Id === carrierId) {
         return (
-          //   <div>
           <Grid container justify="center">
             <Grid item xs={4}>
               <img src={carriers[i].ImageUrl} />
@@ -43,7 +50,9 @@ const FlightListItem = ({ flight, index, agents, legs, carriers }) => {
               <h3>${flight.PricingOptions[0].Price}</h3>
             </Grid>
             <Grid item xs={4}>
-              <Button variant="outlined">Select</Button>
+              <a href={flight.PricingOptions[0].DeeplinkUrl}>
+                <Button variant="outlined">Select</Button>
+              </a>
             </Grid>
             <Grid
               item
@@ -61,8 +70,23 @@ const FlightListItem = ({ flight, index, agents, legs, carriers }) => {
                 Arrival: {formatArrival}
               </div>
             </Grid>
+
+            <Grid
+              item
+              xs={12}
+              style={{
+                display: "flex",
+                justifyContent: "center"
+              }}
+            >
+              <div style={{ paddingRight: "10px", fontWeight: "bold" }}>
+                {firstStation}
+              </div>
+              <div style={{ paddingLeft: "10px", fontWeight: "bold" }}>
+                {secondStation}
+              </div>
+            </Grid>
           </Grid>
-          //   </div>
         );
       }
     }
@@ -74,18 +98,15 @@ const FlightListItem = ({ flight, index, agents, legs, carriers }) => {
         return findCarrier(
           legs[i].Carriers[0],
           legs[i].Arrival,
-          legs[i].Departure
+          legs[i].Departure,
+          legs[i].OriginStation,
+          legs[i].DestinationStation
         );
       }
     }
   };
   const classes = useStyles();
   return (
-    // <a
-    //   href={flight.PricingOptions[0].DeeplinkUrl}
-    //   style={{ textAlign: "center" }}
-    // >
-    // <Grid item xs={12}>
     <Grid container justify="center" style={{ padding: "20px" }}>
       <Paper
         key={index}
@@ -95,7 +116,6 @@ const FlightListItem = ({ flight, index, agents, legs, carriers }) => {
         {findLegs(flight.InboundLegId)}
       </Paper>
     </Grid>
-    // {/* </a> */}
   );
 };
 

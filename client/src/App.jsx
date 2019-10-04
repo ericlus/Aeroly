@@ -22,6 +22,7 @@ const App = () => {
   const [agents, setAgents] = useState([]);
   const [legs, setLegs] = useState([]);
   const [carriers, setCarriers] = useState([]);
+  const [places, setPlaces] = useState([]);
 
   const changeFromDestination = destination => {
     setFromDestination(destination);
@@ -63,10 +64,11 @@ const App = () => {
         setAgents(response.data.Agents);
         setLegs(response.data.Legs);
         setCarriers(response.data.Carriers);
+        setPlaces(response.data.Places);
         if (response.data.Status === "UpdatesPending") {
           setTimeout(() => {
             return searchFlight();
-          }, 3000);
+          }, 5000);
         }
       })
       .catch(err => {
@@ -76,7 +78,7 @@ const App = () => {
 
   return (
     <div>
-      <h1 style={{ textAlign: "center" }}>Aeroly</h1>
+      <h1 style={{ textAlign: "center", padding: "20px" }}>Aeroly</h1>
       {view === "HOME" ? (
         <Search
           changeFromDestination={changeFromDestination}
@@ -94,6 +96,7 @@ const App = () => {
           agents={agents}
           legs={legs}
           carriers={carriers}
+          places={places}
         />
       ) : null}
     </div>

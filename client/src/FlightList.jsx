@@ -10,7 +10,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const FlightList = ({ liveResults, agents, legs, carriers }) => {
+const FlightList = ({ liveResults, agents, legs, carriers, places }) => {
   const classes = useStyles();
   return (
     <div>
@@ -32,6 +32,7 @@ const FlightList = ({ liveResults, agents, legs, carriers }) => {
                     agents={agents}
                     legs={legs}
                     carriers={carriers}
+                    places={places}
                     style={{ textAlign: "center" }}
                   />
                 );
