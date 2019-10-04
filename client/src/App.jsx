@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Search from "./Search.jsx";
 import moment from "moment";
 import axios from "axios";
+import FlightList from "./FlightList.jsx";
 
 const App = () => {
   const [fromDestination, setFromDestination] = useState("");
@@ -17,6 +18,7 @@ const App = () => {
   const [cabin, setCabin] = useState("economy");
   const [adults, setAdults] = useState(1);
   const [view, setView] = useState("HOME");
+  const [liveResults, setLiveResults] = useState({});
 
   const changeFromDestination = destination => {
     setFromDestination(destination);
@@ -54,7 +56,12 @@ const App = () => {
         adults: adults
       })
       .then(response => {
-        console.log(response);
+        setLiveResults(response.data);
+        if (response.data.Status === "UpdatesPending") {
+          setTimeout(() => {
+            return searchFlight();
+          }, 3000);
+        }
       })
       .catch(err => {
         console.log(err);
@@ -75,6 +82,7 @@ const App = () => {
           changeAdults={changeAdults}
         />
       ) : null}
+      {view === "SEARCHED" ? <FlightList liveResults={liveResults} /> : null}
     </div>
   );
 };

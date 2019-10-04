@@ -66,7 +66,7 @@ app.post("/search", (req, res) => {
       return pollSession(splitUrl[splitUrl.length - 1]);
     })
     .then(response => {
-      res.send(response.data.Itineraries);
+      res.send(response.data);
     })
     .catch(err => {
       console.log(err);
