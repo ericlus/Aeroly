@@ -81,7 +81,6 @@ const Search = ({
   };
 
   const handleAdultsChange = e => {
-    this.setState({ adults: e.target.value });
     setAdults(e.target.value);
     changeAdults(e.target.value);
   };

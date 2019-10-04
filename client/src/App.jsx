@@ -44,14 +44,21 @@ const App = () => {
 
   const searchFlight = () => {
     setView("SEARCHED");
-    axios.post("/search", {
-      fromDestination: fromDestination,
-      toDestination: toDestination,
-      departDate: departDate,
-      returnDate: returnDate,
-      cabin: cabin,
-      adults: adults
-    });
+    axios
+      .post("/search", {
+        fromDestination: fromDestination,
+        toDestination: toDestination,
+        departDate: departDate,
+        returnDate: returnDate,
+        cabin: cabin,
+        adults: adults
+      })
+      .then(response => {
+        console.log(response);
+      })
+      .catch(err => {
+        console.log(err);
+      });
   };
 
   return (
