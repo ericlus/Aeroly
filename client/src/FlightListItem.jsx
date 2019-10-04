@@ -1,6 +1,15 @@
 import React from "react";
-import ListItem from "@material-ui/core/ListItem";
 import moment from "moment";
+import Grid from "@material-ui/core/Grid";
+import Button from "@material-ui/core/Button";
+import Paper from "@material-ui/core/Paper";
+import { makeStyles } from "@material-ui/core/styles";
+
+const useStyles = makeStyles(theme => ({
+  root: {
+    padding: theme.spacing(3, 2)
+  }
+}));
 
 const FlightListItem = ({ flight, index, agents, legs, carriers }) => {
   //   const findAgent = agentNumber => {
@@ -25,11 +34,35 @@ const FlightListItem = ({ flight, index, agents, legs, carriers }) => {
     for (let i = 0; i < carriers.length; i++) {
       if (carriers[i].Id === carrierId) {
         return (
-          <div>
-            <div>Departure: {formatDeparture}</div>
-            <div>Arrival: {formatArrival}</div>
-            <img src={carriers[i].ImageUrl} />
-          </div>
+          //   <div>
+          <Grid container justify="center">
+            <Grid item xs={4}>
+              <img src={carriers[i].ImageUrl} />
+            </Grid>
+            <Grid item xs={4}>
+              <h3>${flight.PricingOptions[0].Price}</h3>
+            </Grid>
+            <Grid item xs={4}>
+              <Button variant="outlined">Select</Button>
+            </Grid>
+            <Grid
+              item
+              xs={12}
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                padding: "20px"
+              }}
+            >
+              <div style={{ paddingRight: "10px" }}>
+                Departure: {formatDeparture}
+              </div>
+              <div style={{ paddingLeft: "10px" }}>
+                Arrival: {formatArrival}
+              </div>
+            </Grid>
+          </Grid>
+          //   </div>
         );
       }
     }
@@ -46,15 +79,23 @@ const FlightListItem = ({ flight, index, agents, legs, carriers }) => {
       }
     }
   };
-
+  const classes = useStyles();
   return (
-    <a href={flight.PricingOptions[0].DeeplinkUrl}>
-      <ListItem key={index}>
-        {/* {findAgent(flight.PricingOptions[0].Agents[0])} */}
+    // <a
+    //   href={flight.PricingOptions[0].DeeplinkUrl}
+    //   style={{ textAlign: "center" }}
+    // >
+    // <Grid item xs={12}>
+    <Grid container justify="center" style={{ padding: "20px" }}>
+      <Paper
+        key={index}
+        style={{ textAlign: "center" }}
+        className={classes.root}
+      >
         {findLegs(flight.InboundLegId)}
-        <h3>${flight.PricingOptions[0].Price}</h3>
-      </ListItem>
-    </a>
+      </Paper>
+    </Grid>
+    // {/* </a> */}
   );
 };
 

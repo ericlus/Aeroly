@@ -1,35 +1,48 @@
 import React from "react";
 import FlightListItem from "./FlightListItem.jsx";
-import List from "@material-ui/core/List";
 import Grid from "@material-ui/core/Grid";
+import { makeStyles } from "@material-ui/core/styles";
+import CircularProgress from "@material-ui/core/CircularProgress";
+
+const useStyles = makeStyles(theme => ({
+  progress: {
+    margin: theme.spacing(2)
+  }
+}));
 
 const FlightList = ({ liveResults, agents, legs, carriers }) => {
+  const classes = useStyles();
   return (
     <div>
       <div>
         {liveResults.Status ? (
           <div>
             {liveResults.Status === "UpdatesPending" ? (
-              <div>Loading...</div>
+              <div>
+                <CircularProgress className={classes.progress} />
+              </div>
             ) : null}
             <Grid container justify="center">
-              <List>
-                {liveResults.Itineraries.map((flight, i) => {
-                  return (
-                    <FlightListItem
-                      flight={flight}
-                      index={i}
-                      agents={agents}
-                      legs={legs}
-                      carriers={carriers}
-                    />
-                  );
-                })}
-              </List>
+              {/* <Grid item xs={12}> */}
+              {liveResults.Itineraries.map((flight, i) => {
+                return (
+                  <FlightListItem
+                    flight={flight}
+                    index={i}
+                    agents={agents}
+                    legs={legs}
+                    carriers={carriers}
+                    style={{ textAlign: "center" }}
+                  />
+                );
+              })}
+              {/* </Grid> */}
             </Grid>
           </div>
         ) : (
-          <div>Searching for Flights</div>
+          <Grid container justify="center">
+            <CircularProgress className={classes.progress} />
+          </Grid>
         )}
       </div>
     </div>
