@@ -1,28 +1,88 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
+import Search from "./Search.jsx";
+import moment from "moment";
 import axios from "axios";
+import FlightList from "./FlightList.jsx";
 
 const App = () => {
-  useEffect(() => {
+  const [fromDestination, setFromDestination] = useState("");
+  const [toDestination, setToDestination] = useState("");
+  const [departDate, setDepartDate] = useState(
+    moment(new Date()).format("YYYY-MM-DD")
+  );
+  const [returnDate, setReturnDate] = useState(
+    moment(new Date())
+      .add("days", 7)
+      .format("YYYY-MM-DD")
+  );
+  const [cabin, setCabin] = useState("economy");
+  const [adults, setAdults] = useState(1);
+  const [view, setView] = useState("HOME");
+  const [liveResults, setLiveResults] = useState({});
+
+  const changeFromDestination = destination => {
+    setFromDestination(destination);
+  };
+
+  const changeToDestination = destination => {
+    setToDestination(destination);
+  };
+
+  const changeDepartDate = date => {
+    setDepartDate(date);
+  };
+
+  const changeReturnDate = date => {
+    setReturnDate(date);
+  };
+
+  const changeCabin = cabin => {
+    setCabin(cabin);
+  };
+
+  const changeAdults = number => {
+    setAdults(number);
+  };
+
+  const searchFlight = () => {
+    setView("SEARCHED");
     axios
-      .get(
-        "https://skyscanner-skyscanner-flight-search-v1.p.rapidapi.com/apiservices/browsequotes/v1.0/US/USD/en-US/SFO-sky/JFK-sky/2019-10-10?inboundpartialdate=2019-12-01",
-        {
-          params: {},
-          headers: {
-            "X-RapidAPI-Host":
-              "skyscanner-skyscanner-flight-search-v1.p.rapidapi.com",
-            "X-RapidAPI-Key":
-              "576ba02991msh40bfe0a4e429dc4p1fe089jsn5a1c3ff524a1"
-          }
+      .post("/search", {
+        fromDestination: fromDestination,
+        toDestination: toDestination,
+        departDate: departDate,
+        returnDate: returnDate,
+        cabin: cabin,
+        adults: adults
+      })
+      .then(response => {
+        setLiveResults(response.data);
+        if (response.data.Status === "UpdatesPending") {
+          setTimeout(() => {
+            return searchFlight();
+          }, 3000);
         }
-      )
-      .then(result => {
-        console.log(result);
+      })
+      .catch(err => {
+        console.log(err);
       });
-  }, []);
+  };
+
   return (
     <div>
-      <div>Hello World</div>
+      <h1>Aeroly</h1>
+      {view === "HOME" ? (
+        <Search
+          changeFromDestination={changeFromDestination}
+          changeToDestination={changeToDestination}
+          changeDepartDate={changeDepartDate}
+          changeReturnDate={changeReturnDate}
+          searchFlight={searchFlight}
+          changeCabin={changeCabin}
+          changeAdults={changeAdults}
+        />
+      ) : null}
+      {view === "SEARCHED" ? <FlightList liveResults={liveResults} /> : null}
     </div>
   );
 };
