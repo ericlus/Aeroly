@@ -1,11 +1,10 @@
 import React from "react";
 import FlightListItem from "./FlightListItem.jsx";
 
-const FlightList = ({ liveResults }) => {
+const FlightList = ({ liveResults, agents }) => {
   return (
     <div>
       <div>
-        {console.log(liveResults.Status)}
         {liveResults.Status ? (
           <div>
             {liveResults.Status === "UpdatesPending" ? (
@@ -13,7 +12,9 @@ const FlightList = ({ liveResults }) => {
             ) : null}
             <div>
               {liveResults.Itineraries.map((flight, i) => {
-                return <FlightListItem flight={flight} index={i} />;
+                return (
+                  <FlightListItem flight={flight} index={i} agents={agents} />
+                );
               })}
             </div>
           </div>

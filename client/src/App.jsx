@@ -19,6 +19,7 @@ const App = () => {
   const [adults, setAdults] = useState(1);
   const [view, setView] = useState("HOME");
   const [liveResults, setLiveResults] = useState({});
+  const [agents, setAgents] = useState([]);
 
   const changeFromDestination = destination => {
     setFromDestination(destination);
@@ -57,6 +58,7 @@ const App = () => {
       })
       .then(response => {
         setLiveResults(response.data);
+        setAgents(response.data.Agents);
         if (response.data.Status === "UpdatesPending") {
           setTimeout(() => {
             return searchFlight();
@@ -82,7 +84,9 @@ const App = () => {
           changeAdults={changeAdults}
         />
       ) : null}
-      {view === "SEARCHED" ? <FlightList liveResults={liveResults} /> : null}
+      {view === "SEARCHED" ? (
+        <FlightList liveResults={liveResults} agents={agents} />
+      ) : null}
     </div>
   );
 };
