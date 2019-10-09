@@ -102,7 +102,7 @@ const Search = ({
             }}
             minLength={3}
             onSearch={handleSearch}
-            placeholder="Search for a location"
+            placeholder="Search for a departure location"
             onChange={handleFromChange}
           />
         </div>
@@ -119,44 +119,55 @@ const Search = ({
             }}
             minLength={3}
             onSearch={handleSearch}
-            placeholder="Search for a location"
+            placeholder="Search for a destination"
             onChange={handleToChange}
           />
         </div>
       </Grid>
-      <Grid container justify="center">
-        <MuiPickersUtilsProvider utils={DateFnsUtils}>
-          <KeyboardDatePicker
-            disableToolbar
-            variant="inline"
-            format="MM/dd/yyyy"
-            margin="normal"
-            id="date-picker-inline"
-            label="Depart"
-            value={departDate}
-            onChange={handleDepartDateChange}
-            KeyboardButtonProps={{
-              "aria-label": "change date"
-            }}
-          />
-        </MuiPickersUtilsProvider>
 
-        <MuiPickersUtilsProvider utils={DateFnsUtils}>
-          <KeyboardDatePicker
-            disableToolbar
-            variant="inline"
-            format="MM/dd/yyyy"
-            margin="normal"
-            id="date-picker-inline"
-            label="Return"
-            value={returnDate}
-            onChange={handleReturnDateChange}
-            KeyboardButtonProps={{
-              "aria-label": "change date"
-            }}
-          />
-        </MuiPickersUtilsProvider>
-        <div style={{ marginTop: "16px" }}>
+      <Grid
+        container
+        direction="row"
+        justify="center"
+        alignItems="center"
+        spacing={4}
+      >
+        <Grid item>
+          <MuiPickersUtilsProvider utils={DateFnsUtils}>
+            <KeyboardDatePicker
+              disableToolbar
+              variant="inline"
+              format="MM/dd/yyyy"
+              margin="normal"
+              id="date-picker-inline"
+              label="Depart"
+              value={departDate}
+              onChange={handleDepartDateChange}
+              KeyboardButtonProps={{
+                "aria-label": "change date"
+              }}
+            />
+          </MuiPickersUtilsProvider>
+        </Grid>
+
+        <Grid item>
+          <MuiPickersUtilsProvider utils={DateFnsUtils}>
+            <KeyboardDatePicker
+              disableToolbar
+              variant="inline"
+              format="MM/dd/yyyy"
+              margin="normal"
+              id="date-picker-inline"
+              label="Return"
+              value={returnDate}
+              onChange={handleReturnDateChange}
+              KeyboardButtonProps={{
+                "aria-label": "change date"
+              }}
+            />
+          </MuiPickersUtilsProvider>
+        </Grid>
+        <Grid item style={{ marginTop: "7px" }}>
           <FormControl>
             <InputLabel htmlFor="age-simple">Cabin</InputLabel>
             <Select
@@ -172,7 +183,8 @@ const Search = ({
               <MenuItem value={"first"}>First</MenuItem>
             </Select>
           </FormControl>
-
+        </Grid>
+        <Grid item style={{ marginTop: "7px" }}>
           <FormControl>
             <InputLabel htmlFor="age-simple">Adults</InputLabel>
             <Select
@@ -187,7 +199,7 @@ const Search = ({
               })}
             </Select>
           </FormControl>
-        </div>
+        </Grid>
       </Grid>
 
       <Grid container justify="center" style={{ padding: "20px" }}>
