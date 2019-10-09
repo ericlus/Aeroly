@@ -1,8 +1,6 @@
 import React from "react";
 import moment from "moment";
-import Grid from "@material-ui/core/Grid";
-import Button from "@material-ui/core/Button";
-import Paper from "@material-ui/core/Paper";
+import { Grid, Button, Paper } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles(theme => ({
@@ -11,7 +9,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const FlightListItem = ({ flight, index, agents, legs, carriers, places }) => {
+const FlightListItem = ({ flight, index, legs, carriers, places }) => {
   const findCarrier = (
     carrierId,
     arrival,
@@ -30,11 +28,9 @@ const FlightListItem = ({ flight, index, agents, legs, carriers, places }) => {
 
     for (let i = 0; i < places.length; i++) {
       if (places[i].Id === originStation) {
-        console.log(places[i].Code);
         firstStation = places[i].Code;
       }
       if (places[i].Id === destinationStation) {
-        console.log(places[i].Code);
         secondStation = places[i].Code;
       }
     }
@@ -80,10 +76,10 @@ const FlightListItem = ({ flight, index, agents, legs, carriers, places }) => {
               }}
             >
               <div style={{ paddingRight: "10px", fontWeight: "bold" }}>
-                {firstStation}
+                {secondStation}
               </div>
               <div style={{ paddingLeft: "10px", fontWeight: "bold" }}>
-                {secondStation}
+                {firstStation}
               </div>
             </Grid>
           </Grid>

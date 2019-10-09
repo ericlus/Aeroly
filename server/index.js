@@ -70,6 +70,7 @@ app.post("/search", (req, res) => {
     })
     .catch(err => {
       console.log(err);
+      res.send("ERROR");
     });
 });
 

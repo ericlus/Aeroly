@@ -8,7 +8,9 @@ const App = () => {
   const [fromDestination, setFromDestination] = useState("");
   const [toDestination, setToDestination] = useState("");
   const [departDate, setDepartDate] = useState(
-    moment(new Date()).format("YYYY-MM-DD")
+    moment(new Date())
+      .add("hours", 1)
+      .format("YYYY-MM-DD")
   );
   const [returnDate, setReturnDate] = useState(
     moment(new Date())
@@ -19,10 +21,10 @@ const App = () => {
   const [adults, setAdults] = useState(1);
   const [view, setView] = useState("HOME");
   const [liveResults, setLiveResults] = useState({});
-  const [agents, setAgents] = useState([]);
   const [legs, setLegs] = useState([]);
   const [carriers, setCarriers] = useState([]);
   const [places, setPlaces] = useState([]);
+  const [error, setError] = useState(false);
 
   const changeFromDestination = destination => {
     setFromDestination(destination);
@@ -48,8 +50,17 @@ const App = () => {
     setAdults(number);
   };
 
+  const changeView = view => {
+    if (view === "HOME") {
+      setView(view);
+      setError(false);
+    } else {
+      setView(view);
+    }
+  };
+
   const searchFlight = () => {
-    setView("SEARCHED");
+    changeView("SEARCHED");
     axios
       .post("/search", {
         fromDestination: fromDestination,
@@ -60,15 +71,18 @@ const App = () => {
         adults: adults
       })
       .then(response => {
-        setLiveResults(response.data);
-        setAgents(response.data.Agents);
-        setLegs(response.data.Legs);
-        setCarriers(response.data.Carriers);
-        setPlaces(response.data.Places);
-        if (response.data.Status === "UpdatesPending") {
-          setTimeout(() => {
-            return searchFlight();
-          }, 5000);
+        if (response.data === "ERROR") {
+          setError(true);
+        } else {
+          setLiveResults(response.data);
+          setLegs(response.data.Legs);
+          setCarriers(response.data.Carriers);
+          setPlaces(response.data.Places);
+          if (response.data.Status === "UpdatesPending") {
+            setTimeout(() => {
+              return searchFlight();
+            }, 5000);
+          }
         }
       })
       .catch(err => {
@@ -93,10 +107,11 @@ const App = () => {
       {view === "SEARCHED" ? (
         <FlightList
           liveResults={liveResults}
-          agents={agents}
           legs={legs}
           carriers={carriers}
           places={places}
+          error={error}
+          changeView={changeView}
         />
       ) : null}
     </div>
