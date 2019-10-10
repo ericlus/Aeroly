@@ -1,18 +1,21 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { AsyncTypeahead } from "react-bootstrap-typeahead";
-import Grid from "@material-ui/core/Grid";
+import {
+  Grid,
+  Button,
+  MenuItem,
+  FormControl,
+  Select,
+  InputLabel
+} from "@material-ui/core";
+
 import DateFnsUtils from "@date-io/date-fns";
 import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker
 } from "@material-ui/pickers";
 import moment from "moment";
-import Button from "@material-ui/core/Button";
-import MenuItem from "@material-ui/core/MenuItem";
-import FormControl from "@material-ui/core/FormControl";
-import Select from "@material-ui/core/Select";
-import InputLabel from "@material-ui/core/InputLabel";
 
 const Search = ({
   changeFromDestination,
@@ -48,6 +51,7 @@ const Search = ({
   };
 
   const handleFromChange = input => {
+    console.log(input);
     if (input[0]) {
       changeFromDestination(input[0].PlaceId);
     }
