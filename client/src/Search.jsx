@@ -51,7 +51,6 @@ const Search = ({
   };
 
   const handleFromChange = input => {
-    console.log(input);
     if (input[0]) {
       changeFromDestination(input[0].PlaceId);
     }

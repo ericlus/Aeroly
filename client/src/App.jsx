@@ -3,6 +3,7 @@ import Search from "./Search.jsx";
 import moment from "moment";
 import axios from "axios";
 import FlightList from "./FlightList.jsx";
+import Background from "../images/background.png";
 
 const App = () => {
   const [fromDestination, setFromDestination] = useState("");
@@ -91,8 +92,24 @@ const App = () => {
   };
 
   return (
-    <div>
-      <h1 style={{ textAlign: "center", padding: "20px" }}>Aeroly</h1>
+    <div
+      style={{
+        height: "100vh",
+        backgroundImage: `url(${Background})`,
+        backgroundSize: "cover"
+      }}
+    >
+      <h1
+        style={{
+          textAlign: "center",
+          padding: "20px",
+          fontSize: "60px",
+          marginBottom: "50px",
+          fontFamily: "Snell Roundhand, cursive"
+        }}
+      >
+        Aeroly
+      </h1>
       {view === "HOME" ? (
         <Search
           changeFromDestination={changeFromDestination}
